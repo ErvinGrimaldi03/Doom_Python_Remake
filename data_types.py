@@ -36,7 +36,7 @@ class Node:
 
 class SubSector:
     __slots__ = [
-        "seg_counts",
+        "seg_count",
         "first_seg_id"
     ]
 

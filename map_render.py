@@ -1,6 +1,6 @@
 import pygame as pg
 from settings import *
-
+import random
 
 class MapRender:
     def __init__(self, engine):
@@ -37,6 +37,37 @@ class MapRender:
         y2 = self.remap_y(node.y_partition + node.dy_partition)
         pg.draw.line(self.engine.screen, "blue", (x1, y1), (x2, y2), 4)
 
+    def draw_fov(self, px, py):
+        x,y = self.engine.player.pos
+        angle = -self.engine.player.angle + 90
+        sin_a1 = math.sin(math.radians(angle - H_FOV))
+        cos_a1 = math.cos(math.radians(angle - H_FOV))
+        sin_a2 = math.sin(math.radians(angle + H_FOV))
+        cos_a2 = math.cos(math.radians(angle + H_FOV))
+        len_ray = HEIGHT
+
+        x1, y1 = self.remap_x(x + len_ray * sin_a1), self.remap_y(y + len_ray * cos_a1)
+        x2, y2 = self.remap_x(x + len_ray * sin_a2), self.remap_y(y + len_ray * cos_a2)
+        pg.draw.line(self.engine.screen, 'yellow', (px, py), (x1, y1), 4)
+        pg.draw.line(self.engine.screen, 'yellow', (px, py), (x2, y2), 4)
+
+    def get_color(self, seed):
+        random.seed(seed)
+        rnd = random.randrange
+        rng = 100, 256
+        return rnd(*rng), rnd(*rng), rnd(*rng)
+
+    def draw_seg(self, seg, sub_sector_id):
+        v1 = self.vertexes[seg.start_vertex_id]
+        v2 = self.vertexes[seg.end_vertex_id]
+        pg.draw.line(self.engine.screen, "red", v1, v2, 2)
+
+# v1 = self.vertexes[seg.start_vertex_id]
+# v2 = self.vertexes[seg.end_vertex_id]
+# pg.draw.line(self.engine.screen, self.get_color(sub_sector_id), v1, v2, 4)
+# pg.display.flip()
+# pg.time.wait(10)
+
     def draw_linedefs(self):
         for line in self.linedefs:
             p1 = self.vertexes[line.start_vertex_id]
@@ -63,7 +94,8 @@ class MapRender:
         pos = self.engine.player.pos
         x = self.remap_x(pos.x)
         y = self.remap_y(pos.y)
-        pg.draw.circle(self.engine.screen, 'green', (x, y), 8)
+        self.draw_fov(px=x, py=y)
+        pg.draw.circle(self.engine.screen, 'green', (x, y), 10)
     def draw_vertexes(self):
         for v in self.vertexes:
             pg.draw.circle(self.engine.screen, 'white', (v.x, v.y), 4)

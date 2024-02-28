@@ -38,7 +38,7 @@ class Wad(object):
         read_2bytes = self.read_2bytes
 
         sub_sector = SubSector()
-        sub_sector.seg_counts = read_2bytes(offset, byte_format='h')
+        sub_sector.seg_count = read_2bytes(offset, byte_format='h')
         sub_sector.first_seg_id = read_2bytes(offset + 2, byte_format='h')
 
         return sub_sector
