@@ -15,14 +15,18 @@ class MapRender:
 
     def draw(self):
         self.draw_linedefs()
-        self.draw_vertexes()
+
         self.draw_player_pos()
-        self.draw_node(node_id=self.engine.bsp.root_node_id)
 
     def draw_bbox(self, bbox, color):
         x, y= self.remap_x(bbox.left), self.remap_y(bbox.top)
         w, h = self.remap_x(bbox.right) - x, self.remap_y(bbox.bottom) - y
         pg.draw.rect(self.engine.screen, color, (x,y,w,h), 2)
+
+    def draw_vlines(self, x1, x2, sub_sector_id):
+        color = self.get_color(sub_sector_id)
+        pg.draw.line(self.engine.screen, color, (x1, 0), (x1, HEIGHT), 3)
+        pg.draw.line(self.engine.screen, color, (x2, 0), (x2, HEIGHT), 3)
 
     def draw_node(self, node_id):
         node = self.engine.wad_data.nodes[node_id]
